@@ -1,5 +1,4 @@
-#ifndef PLATFORM_SCOPEDCS_H
-#define PLATFORM_SCOPEDCS_H
+#pragma once
 #include "Platform/CriticalSection.h"
 #include "Platform/RootObject.h"
 #include "Platform/MutexPrimitive.h"
@@ -7,24 +6,23 @@
 namespace Quazal {
     class ScopedCS : public RootObject {
     public:
-        ScopedCS(CriticalSection &cs) : unk0(true), critSec(&cs) {
+        ScopedCS(CriticalSection &cs) : m_bInScope(true), critSec(&cs) {
             if (!MutexPrimitive::s_bNoOp)
-                critSec->EnterImpl();
+                cs.EnterImpl();
         }
 
         ~ScopedCS() { EndScope(); }
 
         void EndScope() {
-            if (unk0) {
+            if (m_bInScope) {
+                CriticalSection *cs = critSec;
                 if (!MutexPrimitive::s_bNoOp)
-                    critSec->LeaveImpl();
-                unk0 = false;
+                    cs->LeaveImpl();
+                m_bInScope = false;
             }
         }
 
-        bool unk0;
+        bool m_bInScope; // 0x0
         CriticalSection *critSec;
     };
 }
-
-#endif

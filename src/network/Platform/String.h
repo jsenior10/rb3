@@ -1,10 +1,14 @@
-#ifndef PLATFORM_STRING_H
-#define PLATFORM_STRING_H
+#pragma once
 #include "Platform/RootObject.h"
 #include "Platform/StringStream.h"
 #include "types.h"
 
 namespace Quazal {
+    class DebugString {
+    public:
+        DebugString() {}
+    };
+
     class String : public RootObject {
     public:
         String();
@@ -18,6 +22,7 @@ namespace Quazal {
         uint GetLength() const;
         void CreateCopy(char **) const;
         void Format(const char *, ...);
+        operator const char *() const { return m_szContent; }
 
         char *m_szContent;
 
@@ -30,5 +35,3 @@ namespace Quazal {
     String &operator+(const Quazal::String &, const char *);
     StringStream &operator<<(Quazal::StringStream &, const Quazal::String &);
 }
-
-#endif

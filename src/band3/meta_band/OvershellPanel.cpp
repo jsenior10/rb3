@@ -95,7 +95,7 @@ OvershellPanel::OvershellPanel(SessionMgr *smgr, BandUserMgr *umgr)
     ThePlatformMgr.AddSink(this, InviteReceivedMsg::Type());
     ThePlatformMgr.AddSink(this, InviteExpiredMsg::Type());
     ThePlatformMgr.AddSink(this, NetStartUtilityFinishedMsg::Type());
-    TheServer->AddSink(this, UserNameNewlyProfaneMsg::Type());
+    TheServer.AddSink(this, UserNameNewlyProfaneMsg::Type());
 }
 
 OvershellPanel::~OvershellPanel() {
@@ -111,7 +111,7 @@ OvershellPanel::~OvershellPanel() {
     TheWiiFriendMgr.RemoveSink(this, InviteReceivedMsg::Type());
     TheWiiFriendMgr.RemoveSink(this, InviteExpiredMsg::Type());
     ThePlatformMgr.RemoveSink(this, NetStartUtilityFinishedMsg::Type());
-    TheServer->RemoveSink(this, UserNameNewlyProfaneMsg::Type());
+    TheServer.RemoveSink(this, UserNameNewlyProfaneMsg::Type());
 }
 
 bool SignInUser(User *u, unsigned long ul) {
@@ -826,7 +826,7 @@ void OvershellPanel::ResolveAutoSignInStates() {
                     } else if (!ThePlatformMgr.mTimer.Running()) {
                         ThePlatformMgr.RunNetStartUtility();
                     }
-                } else if (ossID == 0x12 && TheRockCentral.unk3c == 2) {
+                } else if (ossID == 0x12 && TheRockCentral.IsOnline()) {
                     curSlot->ShowState(kState_SignInWait);
                 }
             }

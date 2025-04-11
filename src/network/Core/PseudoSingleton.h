@@ -1,8 +1,17 @@
 #pragma once
+#include "Core/InstanceControl.h"
 
 namespace Quazal {
-    class PseudoSingleton {
+    class PseudoSingleton : public InstanceControl {
     public:
-        static int GetCurrentContext();
+        PseudoSingleton(unsigned int);
+        virtual ~PseudoSingleton();
+
+        bool SetContext(unsigned int);
+        void SetContextIfRequired(unsigned int);
+        bool UsingInstantiationContext();
+
+        static unsigned int GetCurrentContext();
+        static bool s_bUseInstantiationContext;
     };
 }

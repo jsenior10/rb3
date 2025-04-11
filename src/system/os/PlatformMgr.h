@@ -102,6 +102,7 @@ public:
     bool IsPadAGuest(int) const;
     bool IsGuestOnlineID(const OnlineID *) const;
     bool StartProfanity(const unsigned short **, int, char *, Hmx::Object *);
+    void HandleNetError(int, Symbol);
 
     bool OnMsg(const ButtonDownMsg &);
     bool OnMsg(const ButtonUpMsg &);
@@ -204,16 +205,23 @@ extern PlatformMgr ThePlatformMgr;
 
 DECLARE_MESSAGE(PlatformMgrOpCompleteMsg, "platform_mgr_op_complete")
 PlatformMgrOpCompleteMsg(int i) : Message(Type(), i) {}
+bool Success() const { return mData->Int(2); }
 END_MESSAGE
 
 DECLARE_MESSAGE(DiskErrorMsg, "disk_error")
+// arg here is a bool
 END_MESSAGE
 
 DECLARE_MESSAGE(DWCProfanityResultMsg, "dwc_profanity_result_msg")
+bool Success() const { return mData->Int(2); }
 END_MESSAGE
 
 DECLARE_MESSAGE(FriendsListChangedMsg, "friends_list_changed")
+int GetPadNum() const { return mData->Int(2); }
 END_MESSAGE
 
 DECLARE_MESSAGE(PartyMembersChangedMsg, "party_members_changed")
+END_MESSAGE
+
+DECLARE_MESSAGE(EnumerateMessagesCompleteMsg, "enumerate_messages_complete")
 END_MESSAGE

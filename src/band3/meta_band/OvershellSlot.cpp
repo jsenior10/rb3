@@ -85,12 +85,12 @@ OvershellSlot::OvershellSlot(
     mOvershellDir->HandleType(setupProviders);
     mUserNameLabel = mOvershellDir->Find<BandLabel>("user_name.lbl", true);
     MILO_ASSERT(mUserNameLabel, 0xF1);
-    TheServer->AddSink(this, UserLoginMsg::Type());
+    TheServer.AddSink(this, UserLoginMsg::Type());
 }
 
 OvershellSlot::~OvershellSlot() {
     mSessionMgr->RemoveSink(this, LocalUserLeftMsg::Type());
-    TheServer->RemoveSink(this, UserLoginMsg::Type());
+    TheServer.RemoveSink(this, UserLoginMsg::Type());
     RELEASE(mSwappableProfilesProvider);
     RELEASE(mCharProvider);
     RELEASE(mMuteUsersProvider);
@@ -991,7 +991,7 @@ void OvershellSlot::FetchLinkingCode() {
     BandUser *pUser = GetUser();
     if (pUser->IsLocal()) {
         int padnum = pUser->GetLocalBandUser()->GetPadNum();
-        if (TheServer->GetPlayerID(padnum) != 0) {
+        if (TheServer.GetPlayerID(padnum) != 0) {
             TheRockCentral.GetLinkingCode(padnum, mLinkingCodeResultList, this);
             unk81 = true;
         } else
@@ -1010,8 +1010,8 @@ void OvershellSlot::CancelLinkingCode() {
 DataNode OvershellSlot::OnMsg(const RockCentralOpCompleteMsg &msg) {
     MILO_ASSERT(mState->GetStateID() == kState_LinkingCode, 0x777);
     mState->SetProperty(waiting, 0);
-    mState->SetProperty(success, msg.Arg0());
-    if (msg.Arg0()) {
+    mState->SetProperty(success, msg.Success());
+    if (msg.Success()) {
         DataNode node(0);
         mLinkingCodeResultList.Update(nullptr);
         mLinkingCodeResultList.GetDataResult(0)->GetDataResultValue("code", node);
@@ -1175,7 +1175,7 @@ void OvershellSlot::UpdateState() {
         LocalBandUser *localUser = pUser->GetLocalBandUser();
         if (mState->GetStateID() == kState_LinkingCode) {
             bool cannotSave = !localUser->CanSaveData();
-            cannotSave |= !TheServer->IsConnected();
+            cannotSave |= !TheServer.IsConnected();
             if (cannotSave) {
                 CancelLinkingCode();
                 ShowState(kState_OptionsExtras);
