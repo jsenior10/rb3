@@ -30,7 +30,7 @@ int VibratoDetector::Analyze(float f1) {
             mBuffer[mBufIdx % 5] = mSample;
             mPitches[mBufIdx++ % 5] = mY1;
             if(Detect()) {
-                 // missing something here
+                vibratoLength = mSample - mLastDetect;
                 mLastDetect = mSample;
             }
         }
